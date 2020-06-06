@@ -1,0 +1,134 @@
+function LFE
+clc;clear all;close all;
+load LFE_INP
+NV=size(X,2); % number of variables 
+ND=size(X,1); % number of data set is defined again % Modify training set to fit membership, X and Y
+% to find the nearest membership center anyway
+for i=1:ND
+    for j=1:NV
+        X_m(i,j)=(X(i,j)+mXr(1,j))/mXint(j);
+    end
+    Y_m(i,1)=(Y(i)+mYr(1))/mYint;
+end
+% Find the rule for the first training set 
+NR=1;  
+ND=1; % redefine later to original ND
+for j=1:NV
+    % find the column of the nearest membership center to data point
+    jX(j)=find(mXc{j}==round(X_m(ND,j))*mXint(j)-mXr(1,j),2);
+    if size(jX(j),2) == 0
+        % If there is not adquate membership,
+        display ('Warning! Redefine membership function')
+    end
+end
+jY=find(mYc==round(Y_m(ND))*mYint-mYr(1),2);  
+if size(jY,2) == 0
+    % If there is not adquate membership,
+    display ('Warning! Redefine membership function')
+end
+% First rule assignment
+for j=1:NV
+    % rule premises
+    C(NR,j)=round(X_m(ND,j))*mXint(j)-mXr(1,j); 
+    S(NR,j)=mXs{j}(jX(j)); 
+    muX(ND,j)=triangle(X(ND,j),C(NR,j),S(NR,j),mXr(1,j),mXr(2,j));
+end
+B(NR,1)=round(Y_m(ND))*mYint-mYr(1); % rule consequence
+BS(NR,1)=mYs(jY); % rule consequence (output) spread
+muY(ND)=triangle(Y(ND),B(NR),BS(NR),mYr(1),mYr(2));
+dgrR(NR,ND)=prod(muX(ND,:))*muY(ND); % degree of attainment of ND to NR
+% By degree of attainment, rule is generated
+ND=size(X,1); % define number of data set again
+for i=2:ND
+    for j=1:NV
+muX(i,j)=triangle(X(i,j),C(NR,j),S(NR,j),mXr(1,j),mXr(2,j));
+    end
+    muY(i)=triangle(Y(i),B(NR),BS(NR),mYr(1),mYr(2));
+    dgrR(NR,i)=prod(muX(i,:))*muY(i); % degree of attainment
+    if dgrR(NR,i) > dgrR_min
+       % do nothing
+    else  
+        NR=NR+1; % generate new rule
+        for j=1:NV
+        % find the column of the nearest membership center to data point
+            jX(j)=find(mXc{j}==round(X_m(i,j))*mXint(j)-mXr(1,j),2);
+            if size(jX(j),2) == 0
+                % If there is not adquate membership,
+                display ('Warning! Redefine membership function')
+            end
+        end
+        jY=find(mYc==round(Y_m(i))*mYint-mYr(1),2);
+        if size(jY,2) == 0
+            % If there is not adquate membership,
+            display ('Warning! Redefine membership function')
+        end
+        % Another rule assignment
+        for j=1:NV
+            % rule premises
+            C(NR,j)=round(X_m(i,j))*mXint(j)-mXr(1,j);
+            S(NR,j)=mXs{j}(jX(j));
+            muX(i,j)=triangle(X(i,j),C(NR,j),S(NR,j),mXr(1,j),mXr(2,j));
+        end
+        B(NR,1)=round(Y_m(i))*mYint-mYr(1); % rule consequence
+        BS(NR,1)=mYs(jY); % rule consequence (output) spread
+        muY(i)=triangle(Y(i),B(NR),BS(NR),mYr(1),mYr(2));
+        dgrR(NR,i)=prod(muX(i,:))*muY(i); % degree of attainment
+    end
+end
+ 
+% Calculate Regression Matrix F for triangular membership function
+% Make sure input for B and B_denom are going to be column vector!!!!!!!!!
+F_T=regression_T(X,C,S,mXr); % B_denom is added  
+% Calculate the output for the training set
+f_training=B'*F_T';
+% Calculate the output for the test set
+F_T_test=regression_T(X_t,C,S,mXr);% Calculate F for test set
+f_test=B'*F_T_test';
+disp(C)
+% Save variables to LFE_OUT.mat
+save('LFE _OUT ','X','Y','C','S','B','X_t')
+
+% Sub functions
+function F=regression_T(X,C,S,mXr)% Add BS, output spread
+NV=size(X,2); % number of variables xn
+ND=size(X,1); % number of data set
+NR=size(C,1); % number of rules
+ 
+% Calculate membership values
+for i=1:ND % i-th data set
+    for j=1:NR % j-th rule
+        for k=1:NV % k-th variable
+            mu(i,j,k)=triangle(X(i,k),C(j,k),S(j,k),mXr(1,k),mXr(2,k));
+        end
+    end
+end
+mu_prod=prod(mu,3); % calculate product of variables
+mu_rsum=sum(mu_prod,2)+1e-10; % to prevent deviding zero
+for i=1:ND % i-th data set
+    for j=1:NR % j-th rule
+        F(i,j)=mu_prod(i,j)/mu_rsum(i);
+    end
+end
+return
+ 
+function mu=triangle(x,c,w,cL,cR)
+if c==cL
+    if x <= c
+        mu=1;
+    else
+        mu=max(0,1+2*(c-x)/w);
+    end
+elseif c==cR
+    if x <= c
+        mu=max(0,1+2*(x-c)/w);
+    else
+        mu=1;
+    end
+else
+    if x <= c
+        mu=max(0,1+2*(x-c)/w);
+    else
+        mu=max(0,1+2*(c-x)/w);
+    end
+end
+return

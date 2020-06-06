@@ -1,0 +1,79 @@
+% The following code was developed by Jung J. Kim and M. M. Reda Taha
+% March (2010) based on the book "Fuzzy Logic with Engineering Applications, 
+% 3rd Edition,  by Timothy J. Ross (2010)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+clc;clear all;close all;
+ 
+% For the number of n input variables (x1,x2,...,xn) 
+ 
+%--------------------------------------------------------------------------
+% PARAMETERS
+%--------------------------------------------------------------------------
+% The minimum degree of attainment for a Rule, dgrR_min
+% if the calculated degree of attainment of a training data is less than
+% the minimum, dgrR_min, a new rule is attained
+dgrR_min=0.5; 
+
+% TRAINING SET
+%--------------------------------------------------------------------------
+% the input of training set, each row [x1,x2,...xn]
+% X(i,j): j-th input variable of i-th training set
+X=[
+12250,  3750;	11500,  6500;	11250,  9000;	
+11000,  11000;	11960,  9000;	12140,  6510;
+13000,  3750;	13800,  3750;	12950,  6500;
+12600,  9000;	11170,  11110;	12930,  13000;
+13000,  12500;	11130,  9000;	11250,  6500;
+12000,  3750;	12900,  3750;	11990,  6500;
+12010,  9000;	12000,  12000;	14490,  14450;
+12900,  9000;	13220,  6500;	14000,  3750;
+]; 
+% X=[0, 2; 1, 3; 2, 4; 3,6]; % to generate overlapping rule 
+ 
+% the output of training set, each row [y]
+% same length of rows with X
+%Y=[1 ; 5 ; 6 ]; % Y(i): the output of i-th training set
+Y=[
+3.92176 ;	2.90297 ;	2.51901 ;
+1.63300 ;	2.50463 ;	3.22360 ;
+4.37127 ;	4.91016 ;	3.60650 ;
+2.80437 ;	1.65160 ;	2.02390 ;
+2.36600 ;	2.19333 ;	2.77190 ;
+3.88243 ;	4.28953 ;	3.15040 ;
+2.58113 ;	1.95610 ;	2.41490 ;
+2.97153 ;	3.81633 ;	5.05537 ;
+];
+%--------------------------------------------------------------------------
+% Membership function parameters for LFE
+% Define data point range
+mXr=[10000,3000; 15000,15000]; % Range for x1,x2, depends on how many coloumns your dataset has
+mYr=[1; 6 ]; % for output [cL;cR]
+% Define membership function parameters for triangular membership function
+% regular base width is applied to the corresponding membership functions
+mXc={(10000:15000),(3000:16000)}; % center for input {[x1],[x2]} 
+mYc=(1: 6 ); % center for output y
+% regular interval for membership center
+mXint=[2000, 2000]; 	% membership center interval for input [x1,x2]
+mYint=[2]; 			% membership center interval for output [y]
+for j=1:size(mXc,2)
+    mXs{j}=2*mXint(j)*ones(size(mXc{j}));% base for input {[x1],[x2]}
+end  
+disp(mXs)
+mYs=2*mYint*ones(size(mYc)); % base for output y
+ 
+%--------------------------------------------------------------------------
+% TEST SET
+% the input of test set, each row [x1,x2,...xn]
+X_t=[
+12911.1,    12927;	11092.4,    10966.4;
+14545.8,    14487.1;	13012.1,    12963.8;
+12150,      3750;		12904,      3744.8;
+14000,      3770.4;	11406,      6520.3;
+12100,      6535.5;	13109,      6525.3;
+11017.6,    9000.7;	12105.9,    8975.1;
+12700,      900.0;
+]; 
+%--------------------------------------------------------------------------
+% Generate input file
+save('LFE_INP','dgrR_min','X','Y','mXr','mYr','mXc','mXs','mXint',...
+     'mYc','mYs','mYint','X_t')

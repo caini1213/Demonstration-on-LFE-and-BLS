@@ -1,0 +1,60 @@
+- But we can pass these data into BLS to improve it too, for applying this, we just need to load the LFE_OUT.m into the BLS.m then run it.
+function BLS
+
+clc;clear all;close all;
+% Loading input file
+load LFE+_OUT
+ 
+% Calculate Regression Matrix F, composition of regression vectors, xsi
+F=regression(X,C,S);
+% Calculate Mapping vector, q_h
+q_h=(F'*F)^(-1)*F'*Y;
+ 
+disp((-1)*F'*Y)
+disp(F'*F)
+ 
+disp(size(F))
+disp(size(Y))
+disp(q_h)
+ 
+% Calculate the output for the training set
+f_training=F*q_h;
+% Calculate the output for the test set
+F_test=regression(X_t,C,S);% Calculate Regression Matrix F for test set
+f_test=F_test*q_h;
+ 
+% Save variables to BLS_OUT.mat
+save('LFE+BLS_OUT','F','q_h','f_training','f_test')
+ 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Sub functions
+function F=regression(X,C,S)
+NV=size(X,2); % number of variables xn
+ND=size(X,1); % number of data set
+NR=size(C,1); % number of rules
+ 
+% Calculate membership values
+for i=1:ND % i-th data set
+    for j=1:NR % j-th rule
+        for k=1:NV % k-th variable
+            mu(i,j,k)=gauss(X(i,k),C(j,k),S(j,k));
+        end
+    end
+end
+mu_prod=prod(mu,3); % calculate product of variables
+mu_rsum=sum(mu_prod,2);
+for i=1:ND % i-th data set
+    for j=1:NR % j-th rule
+        F(i,j)=mu_prod(i,j)/mu_rsum(i);
+    end
+end
+return
+ 
+function mu=gauss(x,c,sig)
+mu=exp(-(x-c)^2/sig^2/2);
+return
+
+//A file called LFE+BLS_OUT.m will be generated, and we can use the code :
+load LFE+BLS_OUT
+disp(f_test)
+//to see the result

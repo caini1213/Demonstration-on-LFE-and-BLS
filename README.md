@@ -10,30 +10,29 @@ After we generate the LFE_INP.m, we can run the LFE.mat to training it.
 
 <p align="center">
 	<img src="https://user-images.githubusercontent.com/58871500/105806476-0a4b8800-5fdf-11eb-911c-1115a4305af0.png" alt="Transition Plan" 
-       width="70%" height="75%"/>
+       width="60%" height="55%"/>
 </p>
 
 <p align="center">
 	<img src="https://user-images.githubusercontent.com/58871500/105683480-a36e9600-5f2e-11eb-9fbc-de7aedd9f989.png" alt="budget" 
-       width="70%" height="75%"/>
+       width="60%" height="55%"/>
 </p>
 
 <p align="center">
-	<img src="https://user-images.githubusercontent.com/58871500/105732463-6c6aa580-5f6b-11eb-942f-cbdb0cb89e6f.PNG" alt="Schedule" 
-       width="70%" height="75%"/>
+	<img src="https://user-images.githubusercontent.com/58871500/105732463-6c6aa580-5f6b-11eb-942f-cbdb0cb89e6f.PNG" alt="Schedule"/>
 </p>
 
 <p align="center">
 	<img src="https://user-images.githubusercontent.com/58871500/105804777-9956a100-5fdb-11eb-9e65-3dbbbb575b8d.png" alt="Leason Learned" 
-       width="70%" height="75%"/>
+       width="60%" height="55%"/>
 </p>
 
 <p align="center">
 	<img src="https://user-images.githubusercontent.com/58871500/105680081-3bb64c00-5f2a-11eb-90d7-2fef1f475217.jpg" alt="Customer Acceptance" 
-       width="70%" height="75%"/>
+       width="60%" height="55%"/>
 </p>
 
 <p align="center">
 	<img src="https://user-images.githubusercontent.com/58871500/105680081-3bb64c00-5f2a-11eb-90d7-2fef1f475217.jpg" alt="Customer Acceptance" 
-       width="70%" height="75%"/>
+       width="60%" height="55%"/>
 </p>

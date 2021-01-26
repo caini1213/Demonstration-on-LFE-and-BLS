@@ -10,5 +10,5 @@ After we generate the LFE_INP.m, we can run the LFE.mat to training it.
 
 <p align="center">
 	<img src="https://user-images.githubusercontent.com/58871500/105804809-a83d5380-5fdb-11eb-96c3-0bf6e1629342.png" alt="Close Contract" 
-       width="80%" height="80%"/>
+       width="70%" height="75%"/>
 </p>
